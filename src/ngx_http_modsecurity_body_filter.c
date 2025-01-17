@@ -177,7 +177,7 @@ ngx_http_modsecurity_body_filter(ngx_http_request_t *r, ngx_chain_t *in)
             copy_chain->buf = copy_buf;
             copy_chain->buf->last_buf = chain->buf->last_buf;
             copy_chain->next = NULL;
-            chain->buf->pos = chain->buf->last;
+            //chain->buf->pos = chain->buf->last;
         }
         else
           copy_chain = chain;
