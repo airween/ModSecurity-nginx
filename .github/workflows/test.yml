@@ -108,12 +108,12 @@ jobs:
             echo "OK"
           else
             echo "FAIL"
-            exit ${status}
+            exit 1
           fi
       - name: Run file consistency check 1
         run: |
-          status=$(curl -sS -w %{http_code} -I -X GET -H "Host: localhost" "http://localhost/data50k.json" --output data50k.json)
-          if [ "${status}" == "200" ]; then
+          curl -sS "http://localhost/data50k.json" --output data50k.json
+          if [ -f data50k.json ]; then
             status=$(diff data50k.json /usr/local/nginx/html/data50k.json)
             if [ $? -eq 0 ]; then
                 echo "OK"
@@ -123,12 +123,12 @@ jobs:
             fi
           else
             echo "FAIL"
-            exit ${status}
+            exit 1
           fi
       - name: Run file consistency check 2
         run: |
-          status=$(curl -sS -w %{http_code} -I -X GET -H "Host: localhost" "http://localhost/plugged.png" --output plugged.png)
-          if [ "${status}" == "200" ]; then
+          curl -sS "http://localhost/plugged.png" --output plugged.png
+          if [ -f plugged.png ]; then
             status=$(diff plugged.png /usr/local/nginx/html/plugged.png)
             if [ $? -eq 0 ]; then
                 echo "OK"
