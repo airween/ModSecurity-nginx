@@ -108,7 +108,7 @@ jobs:
             echo "OK"
           else
             echo "FAIL"
-            exit 1
+            exit ${status}
           fi
       - name: Run file consistency check 1
         run: |
@@ -123,7 +123,7 @@ jobs:
             fi
           else
             echo "FAIL"
-            exit 1
+            exit ${status}
           fi
       - name: Run file consistency check 2
         run: |
