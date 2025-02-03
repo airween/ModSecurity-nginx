@@ -114,7 +114,7 @@ jobs:
         run: |
           curl -sS "http://localhost/data50k.json" --output data50k.json
           if [ -f data50k.json ]; then
-            status=$(diff data50k.json /usr/local/nginx/html/data50k.json)
+            diff data50k.json /usr/local/nginx/html/data50k.json > /dev/null
             if [ $? -eq 0 ]; then
                 echo "OK"
             else
@@ -129,7 +129,7 @@ jobs:
         run: |
           curl -sS "http://localhost/plugged.png" --output plugged.png
           if [ -f plugged.png ]; then
-            status=$(diff plugged.png /usr/local/nginx/html/plugged.png)
+            diff plugged.png /usr/local/nginx/html/plugged.png > /dev/null
             if [ $? -eq 0 ]; then
                 echo "OK"
             else
