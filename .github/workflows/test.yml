@@ -119,7 +119,7 @@ jobs:
                 echo "OK"
             else
                 echo "FAIL"
-                exit 1
+                exit 2
             fi
           else
             echo "FAIL"
@@ -134,7 +134,7 @@ jobs:
                 echo "OK"
             else
                 echo "FAIL"
-                exit 1
+                exit 2
             fi
           else
             echo "FAIL"
