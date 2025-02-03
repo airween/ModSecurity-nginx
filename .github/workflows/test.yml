@@ -112,7 +112,7 @@ jobs:
           fi
       - name: Run file consistency check 1
         run: |
-          status=$(curl -sS /dev/null -w %{http_code} -I -X GET -H "Host: localhost" "http://localhost/data50k.json" --output data50k.json)
+          status=$(curl -sS -w %{http_code} -I -X GET -H "Host: localhost" "http://localhost/data50k.json" --output data50k.json)
           if [ "${status}" == "200" ]; then
             status=$(diff data50k.json /usr/local/nginx/html/data50k.json)
             if [ $? -eq 0 ]; then
@@ -127,7 +127,7 @@ jobs:
           fi
       - name: Run file consistency check 2
         run: |
-          status=$(curl -sS /dev/null -w %{http_code} -I -X GET -H "Host: localhost" "http://localhost/plugged.png" --output plugged.png)
+          status=$(curl -sS -w %{http_code} -I -X GET -H "Host: localhost" "http://localhost/plugged.png" --output plugged.png)
           if [ "${status}" == "200" ]; then
             status=$(diff plugged.png /usr/local/nginx/html/plugged.png)
             if [ $? -eq 0 ]; then
