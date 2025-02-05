@@ -116,6 +116,7 @@ jobs:
           if [ -f data50k.json ]; then
             diff data50k.json /usr/local/nginx/html/data50k.json > /dev/null
             if [ $? -eq 0 ]; then
+                ls -l data50k.json /usr/local/nginx/html/data50k.json
                 echo "OK"
             else
                 echo "FAIL"
@@ -131,6 +132,7 @@ jobs:
           if [ -f plugged.png ]; then
             diff plugged.png /usr/local/nginx/html/plugged.png > /dev/null
             if [ $? -eq 0 ]; then
+                ls -l plugged.png /usr/local/nginx/html/plugged.png
                 echo "OK"
             else
                 echo "FAIL"
