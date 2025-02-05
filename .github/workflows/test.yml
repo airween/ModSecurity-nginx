@@ -112,7 +112,7 @@ jobs:
           fi
       - name: Run file consistency check 1
         run: |
-          curl -sS "http://localhost/data50k.json" --output data50k.json
+          curl -m 5 -sS "http://localhost/data50k.json" --output data50k.json
           if [ -f data50k.json ]; then
             diff data50k.json /usr/local/nginx/html/data50k.json > /dev/null
             if [ $? -eq 0 ]; then
@@ -127,7 +127,7 @@ jobs:
           fi
       - name: Run file consistency check 2
         run: |
-          curl -sS "http://localhost/plugged.png" --output plugged.png
+          curl -m 5 -sS "http://localhost/plugged.png" --output plugged.png
           if [ -f plugged.png ]; then
             diff plugged.png /usr/local/nginx/html/plugged.png > /dev/null
             if [ $? -eq 0 ]; then
