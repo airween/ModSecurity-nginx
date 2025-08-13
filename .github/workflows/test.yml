@@ -140,6 +140,28 @@ jobs:
             echo "FAIL"
             exit 1
           fi
+      - name: Check attack log vhost 2 (modsecurity_disable_error_log off(default))
+        run: |
+          if ( grep -q "modsectest2" /usr/local/nginx/logs/error.log ); then
+            echo "OK"
+          else
+            echo "FAIL"
+            exit 1
+          fi
+      - name: Check attack log vhost 3 (modsecurity_disable_error_log on)
+        run: |
+          status=$(curl -sSo /dev/null -w %{http_code} -I -X GET -H "Host: modsecurity_disable_error_log" "http://localhost/?q=attack")
+          if [ "${status}" == "403" ]; then
+            if ( grep -q "modsecurity_disable_error_log" /usr/local/nginx/logs/error.log ); then
+              echo "FAIL"
+              exit 1
+            else
+              echo "OK"
+            fi
+          else
+            echo "FAIL"
+            exit 1
+          fi
       - name: Start Nginx with redir
         run: |
           sudo killall nginx
