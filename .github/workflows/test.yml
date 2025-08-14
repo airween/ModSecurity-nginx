@@ -140,7 +140,7 @@ jobs:
             echo "FAIL"
             exit 1
           fi
-      - name: Check attack log vhost 2 (modsecurity_disable_error_log off(default))
+      - name: Check attack log vhost 2 (modsecurity_use_error_log on(default))
         run: |
           if ( grep -q "modsectest2" /usr/local/nginx/logs/error.log ); then
             echo "OK"
@@ -148,11 +148,11 @@ jobs:
             echo "FAIL"
             exit 1
           fi
-      - name: Check attack log vhost 3 (modsecurity_disable_error_log on)
+      - name: Check attack log vhost 3 (modsecurity_use_error_log off)
         run: |
-          status=$(curl -sSo /dev/null -w %{http_code} -I -X GET -H "Host: modsecurity_disable_error_log" "http://localhost/?q=attack")
+          status=$(curl -sSo /dev/null -w %{http_code} -I -X GET -H "Host: modsecurity_use_error_log_off" "http://localhost/?q=attack")
           if [ "${status}" == "403" ]; then
-            if ( grep -q "modsecurity_disable_error_log" /usr/local/nginx/logs/error.log ); then
+            if ( grep -q "modsecurity_use_error_log_off" /usr/local/nginx/logs/error.log ); then
               echo "FAIL"
               exit 1
             else
