@@ -165,11 +165,7 @@ int ngx_http_modsecurity_store_ctx_header(ngx_http_request_t *r, ngx_str_t *name
 void ngx_http_modsecurity_log(void *log, const void* data);
 ngx_int_t ngx_http_modsecurity_log_handler(ngx_http_request_t *r);
 
-/* ngx_http_modsecurity_pre_access.c */
-ngx_int_t ngx_http_modsecurity_pre_access_handler(ngx_http_request_t *r);
-
-/* ngx_http_modsecurity_rewrite.c */
-ngx_int_t ngx_http_modsecurity_rewrite_handler(ngx_http_request_t *r);
-
+/* ngx_http_modsecurity_access.c */
+ngx_int_t ngx_http_modsecurity_access_handler(ngx_http_request_t *r);
 
 #endif /* _NGX_HTTP_MODSECURITY_COMMON_H_INCLUDED_ */

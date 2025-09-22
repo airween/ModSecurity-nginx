@@ -551,8 +551,7 @@ ngx_module_t ngx_http_modsecurity_module = {
 static ngx_int_t
 ngx_http_modsecurity_init(ngx_conf_t *cf)
 {
-    ngx_http_handler_pt *h_rewrite;
-    ngx_http_handler_pt *h_preaccess;
+    ngx_http_handler_pt *h_access;
     ngx_http_handler_pt *h_log;
     ngx_http_core_main_conf_t *cmcf;
     int rc = 0;
@@ -565,35 +564,19 @@ ngx_http_modsecurity_init(ngx_conf_t *cf)
     }
     /**
      *
-     * Seems like we cannot do this very same thing with
-     * NGX_HTTP_FIND_CONFIG_PHASE. it does not seems to
-     * be an array. Our next option is the REWRITE.
-     *
-     * TODO: check if we can hook prior to NGX_HTTP_REWRITE_PHASE phase.
+     * We want to process everything in the NGX_HTTP_ACCESS_PHASE because we need to allow 
+     * ngx_http_limit_*_module to run
      *
      */
-    h_rewrite = ngx_array_push(&cmcf->phases[NGX_HTTP_REWRITE_PHASE].handlers);
-    if (h_rewrite == NULL)
-    {
-        dd("Not able to create a new NGX_HTTP_REWRITE_PHASE handle");
-        return NGX_ERROR;
-    }
-    *h_rewrite = ngx_http_modsecurity_rewrite_handler;
 
-    /**
-     *
-     * Processing the request body on the preaccess phase.
-     *
-     * TODO: check if hook into separated phases is the best thing to do.
-     *
-     */
-    h_preaccess = ngx_array_push(&cmcf->phases[NGX_HTTP_PREACCESS_PHASE].handlers);
-    if (h_preaccess == NULL)
+    h_access = ngx_array_push(&cmcf->phases[NGX_HTTP_ACCESS_PHASE].handlers);
+    if (h_access == NULL)
     {
-        dd("Not able to create a new NGX_HTTP_PREACCESS_PHASE handle");
+        dd("Not able to create a new NGX_HTTP_ACCESS_PHASE handle");
         return NGX_ERROR;
     }
-    *h_preaccess = ngx_http_modsecurity_pre_access_handler;
+    *h_access = ngx_http_modsecurity_access_handler;
+
 
     /**
      * Process the log phase.
