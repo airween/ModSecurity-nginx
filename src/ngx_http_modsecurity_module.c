@@ -146,6 +146,7 @@ ngx_http_modsecurity_process_intervention (Transaction *transaction, ngx_http_re
     intervention.log = NULL;
     intervention.disruptive = 0;
     ngx_http_modsecurity_ctx_t *ctx = NULL;
+    ngx_http_modsecurity_conf_t  *mcf;
 
     dd("processing intervention");
 
@@ -160,12 +161,19 @@ ngx_http_modsecurity_process_intervention (Transaction *transaction, ngx_http_re
         return 0;
     }
 
-    log = intervention.log;
-    if (intervention.log == NULL) {
-        log = "(no log message was specified)";
+    mcf = ngx_http_get_module_loc_conf(r, ngx_http_modsecurity_module);
+    if (mcf == NULL) {
+        return NGX_HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    ngx_log_error(NGX_LOG_ERR, (ngx_log_t *)r->connection->log, 0, "%s", log);
+    // logging to nginx error log can be disable by setting `modsecurity_use_error_log` to off
+    if (mcf->use_error_log) {
+        log = intervention.log;
+        if (intervention.log == NULL) {
+          log = "(no log message was specified)";
+        }
+        ngx_log_error(NGX_LOG_ERR, (ngx_log_t *)r->connection->log, 0, "%s", log);
+    }
 
     if (intervention.log != NULL) {
         free(intervention.log);
@@ -513,6 +521,14 @@ static ngx_command_t ngx_http_modsecurity_commands[] =  {
     0,
     NULL
   },
+  {
+    ngx_string("modsecurity_use_error_log"),
+    NGX_HTTP_LOC_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_MAIN_CONF|NGX_CONF_FLAG,
+    ngx_conf_set_flag_slot,
+    NGX_HTTP_LOC_CONF_OFFSET,
+    offsetof(ngx_http_modsecurity_conf_t, use_error_log),
+    NULL
+  },
   ngx_null_command
 };
 
@@ -724,6 +740,7 @@ ngx_http_modsecurity_create_conf(ngx_conf_t *cf)
     conf->rules_set = msc_create_rules_set();
     conf->pool = cf->pool;
     conf->transaction_id = NGX_CONF_UNSET_PTR;
+    conf->use_error_log = NGX_CONF_UNSET;
 #if defined(MODSECURITY_SANITY_CHECKS) && (MODSECURITY_SANITY_CHECKS)
     conf->sanity_checks_enabled = NGX_CONF_UNSET;
 #endif
@@ -763,6 +780,7 @@ ngx_http_modsecurity_merge_conf(ngx_conf_t *cf, void *parent, void *child)
 
     ngx_conf_merge_value(c->enable, p->enable, 0);
     ngx_conf_merge_ptr_value(c->transaction_id, p->transaction_id, NULL);
+    ngx_conf_merge_value(c->use_error_log, p->use_error_log, 1);
 #if defined(MODSECURITY_SANITY_CHECKS) && (MODSECURITY_SANITY_CHECKS)
     ngx_conf_merge_value(c->sanity_checks_enabled, p->sanity_checks_enabled, 0);
 #endif

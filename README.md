@@ -175,6 +175,15 @@ using the same unique identificator.
 
 String can contain variables.
 
+modsecurity_use_error_log
+-----------
+**syntax:** *modsecurity_use_error_log on | off*
+
+**context:** *http, server, location*
+
+**default:** *on*
+
+Turns on or off ModSecurity error log functionality.
 
 # Contributing
 
